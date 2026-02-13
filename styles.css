@@ -337,19 +337,26 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  /* Mobile-first height using dvh keeps the hero stable on iOS browser chrome changes. */
-  min-height: 92vh;
-  min-height: 96dvh;
+  min-height: 100dvh;
   padding-top: calc(var(--header-height) + env(safe-area-inset-top, 0px) + clamp(10px, 2.2vh, 24px));
   padding-bottom: calc(max(20px, env(safe-area-inset-bottom, 0px)) + clamp(18px, 3.8vh, 44px));
   text-align: center;
   position: relative;
   overflow: hidden;
   isolation: isolate;
+  background: linear-gradient(180deg, #040712, #090d1c 52%, #090b17);
+}
+
+.hero-bg-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
   background:
-    radial-gradient(120% 95% at 52% 2%, rgba(27, 21, 48, 0.42) 0%, rgba(12, 14, 28, 0.16) 46%, rgba(6, 8, 16, 0) 70%),
-    radial-gradient(145% 118% at 50% 88%, rgba(4, 5, 11, 0.9) 0%, rgba(5, 6, 12, 1) 74%),
-    linear-gradient(180deg, #040712, #090d1c 52%, #090b17);
+    linear-gradient(to bottom, rgba(1, 2, 6, 0.28), rgba(1, 2, 6, 0.68) 74%, rgba(1, 2, 6, 0.82)),
+    radial-gradient(circle at 52% 26%, rgba(239, 196, 116, 0.14) 0%, rgba(9, 12, 23, 0.12) 34%, rgba(6, 8, 16, 0.72) 82%),
+    url('assets/shiva.png') center 22% / cover no-repeat;
+  transform: scale(1.02);
 }
 
 .hero-section::before {
@@ -361,7 +368,7 @@ body {
   background-size: 3px 3px;
   opacity: 0.04;
   pointer-events: none;
-  z-index: 0;
+  z-index: 1;
 }
 
 .hero-section::after {
@@ -372,138 +379,7 @@ body {
   background:
     radial-gradient(ellipse at 50% 45%, rgba(0, 0, 0, 0) 38%, rgba(0, 0, 0, 0.4) 76%, rgba(0, 0, 0, 0.72) 98%),
     linear-gradient(to bottom, rgba(0, 0, 0, 0) 40%, rgba(0, 0, 0, 0.55) 70%, rgba(0, 0, 0, 0.8) 90%);
-  z-index: 0;
-}
-
-.hero-scene-layer {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-}
-
-.hero-canvas {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  display: block;
-}
-
-/* Head halo layer: warm, low-intensity glow anchored near Shiva's head only. */
-.hero-head-halo {
-  position: absolute;
-  left: 50%;
-  top: clamp(12%, 18dvh, 24%);
-  width: clamp(180px, 36vw, 420px);
-  height: clamp(160px, 30vw, 340px);
-  transform: translateX(-50%);
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(231, 183, 102, 0.22) 0%, rgba(203, 149, 63, 0.12) 32%, rgba(0, 0, 0, 0) 74%);
-  filter: blur(clamp(24px, 4vw, 48px));
-  opacity: 0.34;
   z-index: 1;
-  animation: hero-halo-breathe 8.8s ease-in-out infinite;
-}
-
-.hero-motif {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  font-family: var(--font-heading);
-  font-size: clamp(92px, 18vw, 240px);
-  color: rgba(210, 162, 88, 0.04);
-  transform: translateY(1vh);
-  z-index: 1;
-}
-
-.hero-fallback {
-  position: absolute;
-  inset: 0;
-  display: none;
-  place-items: center;
-  padding: calc(var(--header-height) + env(safe-area-inset-top, 0px) + 10px) 16px max(14px, env(safe-area-inset-bottom, 0px));
-  pointer-events: none;
-  z-index: 2;
-}
-
-.hero-fallback[hidden] { display: none; }
-
-/* Show fallback only when WebGL mode is not active */
-.hero-section:not(.hero-webgl-active) .hero-fallback {
-  display: grid;
-}
-
-.hero-section:not(.hero-webgl-active) .hero-canvas {
-  opacity: 0;
-}
-
-.hero-fallback-figure {
-  position: relative;
-  width: clamp(340px, 88vw, 1040px);
-  aspect-ratio: 10 / 16;
-  max-height: min(84dvh, 940px);
-  overflow: visible;
-}
-
-.hero-fallback-figure::before {
-  content: '';
-  position: absolute;
-  left: 50%;
-  top: 7%;
-  width: 54%;
-  height: 28%;
-  transform: translateX(-50%);
-  background: radial-gradient(circle, rgba(239, 196, 116, 0.34) 0%, rgba(220, 160, 68, 0.15) 34%, rgba(0, 0, 0, 0) 74%);
-  filter: blur(24px);
-  z-index: 0;
-  animation: hero-halo-breathe 8.8s ease-in-out infinite;
-}
-
-.hero-fallback-figure::after {
-  content: '';
-  position: absolute;
-  inset: 2% 10% -3%;
-  background:
-    radial-gradient(ellipse at 50% 20%, rgba(240, 207, 137, 0.18) 0%, rgba(210, 162, 88, 0.06) 34%, rgba(0, 0, 0, 0) 78%),
-    radial-gradient(ellipse at 50% 86%, rgba(0, 0, 0, 0) 36%, rgba(2, 3, 8, 0.66) 100%);
-  filter: blur(18px);
-  z-index: 0;
-  pointer-events: none;
-}
-
-.hero-fallback-figure img {
-  position: relative;
-  z-index: 2;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: 50% 30%;
-  display: block;
-  filter: saturate(1.05) contrast(1.1) brightness(0.95);
-  image-rendering: auto;
-  image-rendering: -webkit-optimize-contrast;
-  /* Feather mask: dissolve edges into the dark background. */
-  mask-image:
-    radial-gradient(ellipse 74% 78% at 50% 38%, #000 40%, rgba(0, 0, 0, 0.9) 60%, rgba(0, 0, 0, 0.3) 82%, transparent 96%);
-  -webkit-mask-image:
-    radial-gradient(ellipse 74% 78% at 50% 38%, #000 40%, rgba(0, 0, 0, 0.9) 60%, rgba(0, 0, 0, 0.3) 82%, transparent 96%);
-  mask-size: 100% 100%;
-  -webkit-mask-size: 100% 100%;
-  mask-repeat: no-repeat;
-  -webkit-mask-repeat: no-repeat;
-}
-
-.hero-fallback-glow {
-  position: absolute;
-  inset: 6% -8% -10%;
-  pointer-events: none;
-  background:
-    radial-gradient(circle at 50% 22%, rgba(240, 207, 137, 0.24) 0%, rgba(210, 162, 88, 0.08) 26%, rgba(0, 0, 0, 0) 66%),
-    radial-gradient(circle at 50% 78%, rgba(210, 162, 88, 0.07) 0%, rgba(0, 0, 0, 0) 74%);
-  filter: blur(20px);
-  z-index: 2;
 }
 
 .hero-content {
@@ -530,9 +406,11 @@ body {
   width: min(92vw, 920px);
   padding: clamp(20px, 3.5vw, 36px) clamp(20px, 3.5vw, 40px);
   border-radius: clamp(18px, 3vw, 32px);
-  border: none;
-  background: transparent;
-  box-shadow: none;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(180deg, rgba(4, 6, 12, 0.44), rgba(4, 6, 12, 0.2));
+  box-shadow: 0 14px 48px rgba(0, 0, 0, 0.42);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
 .hero-copy-panel::before {
@@ -1333,12 +1211,9 @@ body {
   .breathing-circle { transition: none !important; }
   .bead.tapped { transform: none; }
   .prahar-dot.current { animation: none; box-shadow: 0 0 6px var(--gold-glow); }
-  /* Reduced motion: keep hero serene and near-static. */
-  .hero-head-halo,
-  .hero-fallback-figure::before {
-    animation: none !important;
-    transform: translateX(-50%) !important;
-    opacity: 0.28;
+  /* Reduced motion: keep hero static. */
+  .hero-bg-layer {
+    transform: none !important;
   }
 }
 
@@ -1361,7 +1236,6 @@ body {
 
 @media (min-width: 768px) {
   .hero-content { width: 100%; }
-  .hero-fallback-figure { width: clamp(560px, 70vw, 1240px); }
   .hero-copy-panel { width: min(84vw, 1020px); }
   .hero-title { max-width: 13ch; }
   .hero-how { width: min(100%, 580px); }
@@ -1370,7 +1244,6 @@ body {
 }
 
 @media (min-width: 1200px) {
-  .hero-fallback-figure { width: clamp(760px, 66vw, 1520px); }
   .hero-copy-panel { width: min(76vw, 1120px); }
   .hero-content { padding-bottom: clamp(14px, 3.6vh, 34px); }
 }

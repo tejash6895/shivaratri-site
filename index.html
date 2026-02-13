@@ -129,17 +129,7 @@
   <main>
     <!-- ═══ SECTION 1: HERO ═══ -->
     <section id="hero" class="section hero-section">
-      <div class="hero-scene-layer" aria-hidden="true">
-        <canvas id="heroCanvas" class="hero-canvas"></canvas>
-        <div class="hero-head-halo"></div>
-        <div class="hero-motif">ॐ</div>
-        <div id="heroFallback" class="hero-fallback" hidden>
-          <figure class="hero-fallback-figure">
-            <img src="assets/shiva.png" alt="Shiva in sacred stillness">
-            <div class="hero-fallback-glow"></div>
-          </figure>
-        </div>
-      </div>
+      <div class="hero-bg-layer" aria-hidden="true"></div>
 
       <div class="container hero-content">
         <div class="hero-copy-panel">
@@ -414,13 +404,6 @@
       </div>
     </div>
   </div>
-
-  <!-- Hero scene runtime -->
-  <script defer src="https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.min.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/three@0.161.0/examples/js/postprocessing/EffectComposer.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/three@0.161.0/examples/js/postprocessing/RenderPass.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/three@0.161.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
-  <script defer src="hero.js"></script>
 
   <!-- jsPDF CDN (lazy loaded by app.js only when needed) -->
   <script defer src="app.js"></script>

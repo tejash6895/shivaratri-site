@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Jagarana with Shiva — Cosmic Spiritual Hero</title>
+  <style>
+    /* 1) Theme tokens */
+    :root {
+      --bg-top: #070913;
+      --bg-mid: #0b1223;
+      --bg-bottom: #120f20;
+      --text-primary: #efe7db;
+      --text-secondary: #b6ab98;
+      --gold-1: #d2a258;
+      --gold-2: #f0cf89;
+      --glass: rgba(10, 14, 26, 0.56);
+      --glass-border: rgba(210, 162, 88, 0.22);
+      --btn-bg: rgba(210, 162, 88, 0.14);
+      --btn-border: rgba(210, 162, 88, 0.45);
+      --radius: 14px;
+      --header-height: 64px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background:
+        radial-gradient(130% 90% at 50% 20%, rgba(37, 30, 56, 0.34) 0%, rgba(11, 14, 26, 0) 58%),
+        radial-gradient(120% 90% at 50% 82%, rgba(5, 6, 11, 0.78) 0%, rgba(5, 6, 11, 0.95) 66%),
+        linear-gradient(180deg, var(--bg-top), var(--bg-mid) 48%, var(--bg-bottom));
+      color: var(--text-primary);
+      font-family: "Outfit", "Avenir Next", "Segoe UI", sans-serif;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.065;
+      background-image: radial-gradient(rgba(255, 255, 255, 0.42) 0.4px, transparent 0.4px);
+      background-size: 3px 3px;
+      mix-blend-mode: soft-light;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: -8%;
+      pointer-events: none;
+      background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0) 38%, rgba(0, 0, 0, 0.42) 92%);
+    }
+
+    .hero-root {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      isolation: isolate;
+    }
+
+    .hero-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .motif-watermark {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      pointer-events: none;
+      z-index: 1;
+      font-family: "Cormorant Garamond", "Times New Roman", serif;
+      font-size: clamp(90px, 18vw, 240px);
+      letter-spacing: 0.04em;
+      color: rgba(210, 162, 88, 0.055);
+      transform: translateY(1vh);
+      user-select: none;
+    }
+
+    .hero-copy {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: max(6.5vh, 44px);
+      z-index: 3;
+      text-align: center;
+      padding: 0 18px;
+      pointer-events: none;
+    }
+
+    .hero-copy h1 {
+      margin: 0;
+      font-family: "Cormorant Garamond", "Times New Roman", serif;
+      font-weight: 600;
+      font-size: clamp(2rem, 8vw, 3.6rem);
+      letter-spacing: 0.015em;
+      color: var(--text-primary);
+      text-shadow: 0 8px 34px rgba(0, 0, 0, 0.5);
+    }
+
+    .hero-copy p {
+      margin: 10px auto 0;
+      max-width: 620px;
+      font-size: clamp(0.9rem, 2.6vw, 1rem);
+      line-height: 1.45;
+      color: var(--text-secondary);
+      text-shadow: 0 8px 28px rgba(0, 0, 0, 0.48);
+    }
+
+    .topbar {
+      position: fixed;
+      top: max(8px, env(safe-area-inset-top));
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(960px, calc(100% - 20px));
+      height: var(--header-height);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 10px 0 14px;
+      border-radius: calc(var(--radius) + 4px);
+      border: 1px solid var(--glass-border);
+      background: linear-gradient(180deg, rgba(16, 20, 34, 0.66), rgba(8, 12, 22, 0.42));
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
+      z-index: 4;
+    }
+
+    @supports not ((backdrop-filter: blur(2px)) or (-webkit-backdrop-filter: blur(2px))) {
+      .topbar { background: rgba(11, 14, 26, 0.88); }
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .brand-mark {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      border: 1px solid rgba(210, 162, 88, 0.45);
+      display: grid;
+      place-items: center;
+      color: var(--gold-2);
+      font-size: 1rem;
+      flex-shrink: 0;
+      background: radial-gradient(circle at 50% 35%, rgba(240, 207, 137, 0.22), rgba(210, 162, 88, 0.08));
+    }
+
+    .brand-text {
+      margin: 0;
+      font-family: "Cormorant Garamond", "Times New Roman", serif;
+      font-weight: 600;
+      font-size: clamp(1.05rem, 2.9vw, 1.3rem);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: var(--text-primary);
+      letter-spacing: 0.02em;
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .start-btn,
+    .mute-btn {
+      border: 1px solid var(--btn-border);
+      border-radius: 999px;
+      background: var(--btn-bg);
+      color: #f4e8d0;
+      cursor: pointer;
+      touch-action: manipulation;
+      transition: transform 0.25s ease, background-color 0.25s ease, border-color 0.25s ease;
+      min-height: 44px;
+      min-width: 44px;
+    }
+
+    .start-btn {
+      padding: 0 18px;
+      font-family: "Outfit", sans-serif;
+      font-size: 0.94rem;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+    }
+
+    .mute-btn {
+      width: 44px;
+      display: inline-grid;
+      place-items: center;
+      font-size: 1rem;
+      padding: 0;
+    }
+
+    .start-btn:hover,
+    .mute-btn:hover {
+      border-color: rgba(240, 207, 137, 0.66);
+      background: rgba(210, 162, 88, 0.22);
+      transform: translateY(-1px);
+    }
+
+    .start-btn:focus-visible,
+    .mute-btn:focus-visible {
+      outline: 2px solid rgba(240, 207, 137, 0.85);
+      outline-offset: 2px;
+    }
+
+    .fallback {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      padding: calc(var(--header-height) + 18px) 16px 20px;
+      z-index: 2;
+      background:
+        radial-gradient(90% 70% at 50% 22%, rgba(35, 30, 47, 0.5) 0%, rgba(10, 12, 22, 0.08) 60%),
+        linear-gradient(180deg, #090c16, #0d1221 48%, #12101f);
+    }
+
+    .fallback[hidden] { display: none; }
+
+    .fallback-frame {
+      position: relative;
+      width: min(88vw, 460px);
+      aspect-ratio: 0.68;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.48);
+      border: 1px solid rgba(210, 162, 88, 0.24);
+      background: #0a0d16;
+    }
+
+    .fallback-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      filter: saturate(0.9) contrast(1.02);
+      mask-image: radial-gradient(ellipse at 50% 42%, #000 50%, rgba(0, 0, 0, 0.65) 76%, transparent 95%);
+      -webkit-mask-image: radial-gradient(ellipse at 50% 42%, #000 50%, rgba(0, 0, 0, 0.65) 76%, transparent 95%);
+    }
+
+    .fallback-glow {
+      position: absolute;
+      inset: -16% -10% -26%;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 50% 33%, rgba(240, 207, 137, 0.42) 0%, rgba(210, 162, 88, 0.18) 21%, rgba(0, 0, 0, 0) 58%),
+        radial-gradient(circle at 50% 74%, rgba(210, 162, 88, 0.16) 0%, rgba(0, 0, 0, 0) 68%);
+      filter: blur(18px);
+    }
+
+    .fallback-note {
+      margin-top: 14px;
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: 0.86rem;
+    }
+
+    .fallback-note code {
+      color: #f0cf89;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 0.82rem;
+    }
+
+    @media (max-width: 700px) {
+      .topbar {
+        height: 60px;
+        padding-inline: 10px;
+      }
+      .brand-text { max-width: 46vw; }
+      .start-btn { padding-inline: 14px; font-size: 0.88rem; }
+      .hero-copy { bottom: max(5.5vh, 30px); }
+      .hero-copy p { max-width: 90vw; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .start-btn,
+      .mute-btn { transition: none; }
+      .start-btn:hover,
+      .mute-btn:hover { transform: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="hero-root">
+    <header class="topbar" role="banner" aria-label="Hero controls">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">ॐ</div>
+        <h2 class="brand-text">Jagarana with Shiva</h2>
+      </div>
+      <div class="controls">
+        <button class="start-btn" id="startBtn" type="button">Start</button>
+        <button class="mute-btn" id="muteBtn" type="button" aria-pressed="true" aria-label="Ambient muted">🔇</button>
+      </div>
+    </header>
+
+    <div class="motif-watermark" aria-hidden="true">ॐ</div>
+
+    <canvas id="heroCanvas" class="hero-canvas" aria-hidden="true"></canvas>
+
+    <div class="hero-copy">
+      <h1>Midnight Stillness</h1>
+      <p>A sacred, quiet vigil in the presence of Shiva. Breathe gently, stay awake in awareness.</p>
+    </div>
+
+    <div id="fallback" class="fallback" hidden>
+      <div>
+        <div class="fallback-frame">
+          <div class="fallback-glow" aria-hidden="true"></div>
+          <img src="./assets/shiva.png" alt="Shiva in golden aura" />
+        </div>
+        <p class="fallback-note">Static mode active. Expected image path: <code>./assets/shiva.png</code></p>
+      </div>
+    </div>
+  </div>
+
+  <noscript>
+    <div style="position:fixed;inset:0;display:grid;place-items:center;background:#0b1223;color:#e8dcc7;font-family:Outfit,sans-serif;padding:20px;text-align:center;">
+      JavaScript is required for the animated hero scene.
+    </div>
+  </noscript>
+
+  <script src="https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.161.0/examples/js/postprocessing/EffectComposer.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.161.0/examples/js/postprocessing/RenderPass.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.161.0/examples/js/postprocessing/UnrealBloomPass.js" defer></script>
+
+  <script defer>
+    (() => {
+      // 2) Scene setup
+      const canvas = document.getElementById('heroCanvas');
+      const fallback = document.getElementById('fallback');
+      const startBtn = document.getElementById('startBtn');
+      const muteBtn = document.getElementById('muteBtn');
+      const reduceMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+      const state = {
+        reducedMotion: reduceMotionQuery.matches,
+        motionFactor: reduceMotionQuery.matches ? 0.12 : 1,
+        pointerX: 0,
+        pointerY: 0,
+        parallaxX: 0,
+        parallaxY: 0,
+        muted: true,
+        startImpulse: 0,
+        isFallback: false,
+      };
+
+      const showFallback = (reason) => {
+        if (state.isFallback) return;
+        state.isFallback = true;
+        console.warn('[hero] fallback:', reason);
+        canvas.style.display = 'none';
+        fallback.hidden = false;
+      };
+
+      const supportsWebGL = () => {
+        try {
+          const test = document.createElement('canvas');
+          return !!(window.WebGLRenderingContext && (test.getContext('webgl') || test.getContext('experimental-webgl')));
+        } catch (err) {
+          return false;
+        }
+      };
+
+      if (!window.THREE || !supportsWebGL()) {
+        showFallback('WebGL unavailable or Three.js not loaded');
+        return;
+      }
+
+      const renderer = new THREE.WebGLRenderer({
+        canvas,
+        antialias: true,
+        alpha: true,
+        powerPreference: 'high-performance',
+      });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.outputColorSpace = THREE.SRGBColorSpace;
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = 1.03;
+
+      const scene = new THREE.Scene();
+      const cameraRig = new THREE.Group();
+      const camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 30);
+      camera.position.set(0, 0.03, 4.1);
+      cameraRig.add(camera);
+      scene.add(cameraRig);
+
+      let composer = null;
+      let bloomPass = null;
+
+      // 6) Bloom/postprocessing
+      if (THREE.EffectComposer && THREE.RenderPass && THREE.UnrealBloomPass) {
+        composer = new THREE.EffectComposer(renderer);
+        composer.addPass(new THREE.RenderPass(scene, camera));
+        bloomPass = new THREE.UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.33, 0.75, 0.86);
+        composer.addPass(bloomPass);
+      }
+
+      const shivaGroup = new THREE.Group();
+      shivaGroup.position.y = window.innerWidth < 768 ? 0.18 : 0.05;
+      scene.add(shivaGroup);
+
+      // 3) Shiva plane & masking/feathering
+      const shivaGeometry = new THREE.PlaneGeometry(2.06, 3.02, 1, 1);
+      const shivaMaterial = new THREE.ShaderMaterial({
+        transparent: true,
+        depthWrite: false,
+        uniforms: {
+          uTex: { value: null },
+          uPulse: { value: 0 },
+        },
+        vertexShader: `
+          varying vec2 vUv;
+          uniform float uPulse;
+          void main() {
+            vUv = uv;
+            vec3 p = position;
+            float s = 1.0 + (0.012 * uPulse);
+            p.xy *= s;
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(p, 1.0);
+          }
+        `,
+        fragmentShader: `
+          varying vec2 vUv;
+          uniform sampler2D uTex;
+          void main() {
+            vec4 tex = texture2D(uTex, vUv);
+
+            float sideMask = smoothstep(0.0, 0.10, vUv.x) * smoothstep(0.0, 0.10, 1.0 - vUv.x);
+            float bottomMask = smoothstep(0.03, 0.28, vUv.y);
+            vec2 centered = (vUv - 0.5) * vec2(1.08, 1.42);
+            float radialMask = 1.0 - smoothstep(0.52, 0.82, length(centered));
+
+            float luma = dot(tex.rgb, vec3(0.2126, 0.7152, 0.0722));
+            float warmLift = smoothstep(0.08, 0.62, luma) * 0.18;
+            vec3 color = tex.rgb + vec3(0.12, 0.08, 0.03) * warmLift;
+
+            float alpha = clamp(sideMask * bottomMask * radialMask, 0.0, 1.0);
+            gl_FragColor = vec4(color, alpha);
+          }
+        `,
+      });
+
+      const shivaMesh = new THREE.Mesh(shivaGeometry, shivaMaterial);
+      shivaGroup.add(shivaMesh);
+
+      const loader = new THREE.TextureLoader();
+      loader.load(
+        './assets/shiva.png',
+        (texture) => {
+          texture.colorSpace = THREE.SRGBColorSpace;
+          texture.anisotropy = Math.min(4, renderer.capabilities.getMaxAnisotropy());
+          shivaMaterial.uniforms.uTex.value = texture;
+        },
+        undefined,
+        () => {
+          showFallback('Shiva texture missing at ./assets/shiva.png');
+        }
+      );
+
+      // 4) Aura particles
+      const auraCount = 8600;
+      const auraGeometry = new THREE.BufferGeometry();
+      const auraPositions = new Float32Array(auraCount * 3);
+      const auraSizes = new Float32Array(auraCount);
+      const auraSeeds = new Float32Array(auraCount);
+      const auraSpeeds = new Float32Array(auraCount);
+      const auraWarm = new Float32Array(auraCount);
+
+      for (let i = 0; i < auraCount; i++) {
+        const i3 = i * 3;
+        const zone = Math.random();
+
+        let x = 0;
+        let y = 0;
+        let z = 0;
+
+        if (zone < 0.5) {
+          const theta = Math.random() * Math.PI * 2;
+          const radius = Math.pow(Math.random(), 1.9) * 0.55;
+          x = Math.cos(theta) * radius * 0.85;
+          y = 0.72 + (Math.random() - 0.5) * 0.5;
+          z = (Math.random() - 0.5) * 0.58;
+        } else if (zone < 0.82) {
+          const side = Math.random() < 0.5 ? -1 : 1;
+          x = side * (0.28 + Math.random() * 0.56) + (Math.random() - 0.5) * 0.18;
+          y = 0.2 + (Math.random() - 0.5) * 0.75;
+          z = (Math.random() - 0.5) * 0.86;
+        } else {
+          const t = Math.random();
+          const phase = t * 9.2 + Math.random() * 3.0;
+          x = Math.sin(phase) * (0.16 + t * 0.34) + (Math.random() - 0.5) * 0.32;
+          y = -0.16 - t * 1.85 + (Math.random() - 0.5) * 0.2;
+          z = (Math.random() - 0.5) * 1.15;
+        }
+
+        auraPositions[i3] = x;
+        auraPositions[i3 + 1] = y;
+        auraPositions[i3 + 2] = z;
+
+        auraSizes[i] = 1.5 + Math.random() * 3.4;
+        auraSeeds[i] = Math.random() * Math.PI * 2;
+        auraSpeeds[i] = 0.24 + Math.random() * 0.62;
+        auraWarm[i] = Math.random();
+      }
+
+      auraGeometry.setAttribute('position', new THREE.BufferAttribute(auraPositions, 3));
+      auraGeometry.setAttribute('aSize', new THREE.BufferAttribute(auraSizes, 1));
+      auraGeometry.setAttribute('aSeed', new THREE.BufferAttribute(auraSeeds, 1));
+      auraGeometry.setAttribute('aSpeed', new THREE.BufferAttribute(auraSpeeds, 1));
+      auraGeometry.setAttribute('aWarm', new THREE.BufferAttribute(auraWarm, 1));
+
+      const auraMaterial = new THREE.ShaderMaterial({
+        transparent: true,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending,
+        uniforms: {
+          uTime: { value: 0 },
+          uMotion: { value: state.motionFactor },
+          uDpr: { value: Math.min(window.devicePixelRatio || 1, 1.5) },
+        },
+        vertexShader: `
+          attribute float aSize;
+          attribute float aSeed;
+          attribute float aSpeed;
+          attribute float aWarm;
+          uniform float uTime;
+          uniform float uMotion;
+          uniform float uDpr;
+          varying float vWarm;
+          varying float vTwinkle;
+          void main() {
+            vec3 p = position;
+            float driftX = sin(uTime * (0.11 + aSpeed * 0.16) + aSeed) * 0.03 * uMotion;
+            float driftY = cos(uTime * (0.09 + aSpeed * 0.12) + aSeed) * 0.026 * uMotion;
+            p.x += driftX;
+            p.y += driftY;
+
+            vec4 mv = modelViewMatrix * vec4(p, 1.0);
+            float pulse = 1.0 + sin(uTime * 0.34 + aSeed) * 0.15 * uMotion;
+            gl_PointSize = aSize * pulse * uDpr * (4.0 / -mv.z);
+            gl_Position = projectionMatrix * mv;
+
+            vWarm = aWarm;
+            vTwinkle = 0.65 + 0.35 * sin(uTime * 0.55 + aSeed * 1.4);
+          }
+        `,
+        fragmentShader: `
+          varying float vWarm;
+          varying float vTwinkle;
+          void main() {
+            vec2 p = gl_PointCoord - 0.5;
+            float d = length(p);
+            float core = smoothstep(0.48, 0.0, d);
+            float glow = smoothstep(0.5, 0.2, d);
+
+            vec3 c1 = vec3(0.80, 0.56, 0.20);
+            vec3 c2 = vec3(0.98, 0.84, 0.50);
+            vec3 color = mix(c1, c2, vWarm);
+
+            float alpha = core * glow * vTwinkle;
+            if (alpha < 0.015) discard;
+            gl_FragColor = vec4(color, alpha * 0.76);
+          }
+        `,
+      });
+
+      const auraPoints = new THREE.Points(auraGeometry, auraMaterial);
+      shivaGroup.add(auraPoints);
+
+      const dustCount = 1200;
+      const dustGeo = new THREE.BufferGeometry();
+      const dustPos = new Float32Array(dustCount * 3);
+      for (let i = 0; i < dustCount; i++) {
+        const i3 = i * 3;
+        dustPos[i3] = (Math.random() - 0.5) * 7.4;
+        dustPos[i3 + 1] = (Math.random() - 0.5) * 5.8;
+        dustPos[i3 + 2] = -1.5 + Math.random() * 1.8;
+      }
+      dustGeo.setAttribute('position', new THREE.BufferAttribute(dustPos, 3));
+      const dustMat = new THREE.PointsMaterial({
+        color: 0x8e7a56,
+        size: 0.012,
+        sizeAttenuation: true,
+        transparent: true,
+        opacity: 0.18,
+        depthWrite: false,
+      });
+      const dust = new THREE.Points(dustGeo, dustMat);
+      scene.add(dust);
+
+      // 5) Energy strands
+      const strandUniforms = {
+        uTime: { value: 0 },
+        uMotion: { value: state.motionFactor },
+      };
+
+      const strandMaterial = new THREE.ShaderMaterial({
+        transparent: true,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending,
+        uniforms: strandUniforms,
+        vertexShader: `
+          uniform float uTime;
+          uniform float uMotion;
+          attribute float aLineT;
+          varying float vLineT;
+          void main() {
+            vLineT = aLineT;
+            vec3 p = position;
+
+            float wave = sin((aLineT * 15.0) + uTime * 0.42 + p.x * 2.0) * 0.024 * uMotion;
+            p.x += wave;
+            p.y += sin(uTime * 0.2 + aLineT * 10.0) * 0.009 * uMotion;
+
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(p, 1.0);
+          }
+        `,
+        fragmentShader: `
+          uniform float uTime;
+          varying float vLineT;
+          void main() {
+            float flow = 0.58 + 0.42 * sin((vLineT * 18.0) - uTime * 1.1);
+            vec3 cA = vec3(0.67, 0.44, 0.16);
+            vec3 cB = vec3(0.98, 0.80, 0.39);
+            vec3 color = mix(cA, cB, flow);
+            float alpha = 0.10 + 0.22 * flow;
+            gl_FragColor = vec4(color, alpha);
+          }
+        `,
+      });
+
+      const strandsGroup = new THREE.Group();
+      shivaGroup.add(strandsGroup);
+
+      const strandCount = 26;
+      const strandSegments = 80;
+      for (let s = 0; s < strandCount; s++) {
+        const positions = new Float32Array(strandSegments * 3);
+        const lineT = new Float32Array(strandSegments);
+
+        const sideBias = (Math.random() - 0.5) * 1.2;
+        const phase = Math.random() * Math.PI * 2;
+        const startY = 0.85 + Math.random() * 0.35;
+
+        for (let i = 0; i < strandSegments; i++) {
+          const t = i / (strandSegments - 1);
+          const i3 = i * 3;
+          const spiral = Math.sin(t * 8.0 + phase) * (0.12 + t * 0.34);
+
+          positions[i3] = sideBias * (0.22 + t * 0.78) + spiral + (Math.random() - 0.5) * 0.02;
+          positions[i3 + 1] = startY - t * 2.65 + Math.sin(t * 6.2 + phase) * 0.06;
+          positions[i3 + 2] = -0.14 + Math.cos(t * 5.2 + phase) * 0.08;
+          lineT[i] = t;
+        }
+
+        const geo = new THREE.BufferGeometry();
+        geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        geo.setAttribute('aLineT', new THREE.BufferAttribute(lineT, 1));
+
+        const line = new THREE.Line(geo, strandMaterial);
+        line.rotation.z = (Math.random() - 0.5) * 0.42;
+        line.position.x = (Math.random() - 0.5) * 0.52;
+        line.position.y = -0.05 + (Math.random() - 0.5) * 0.22;
+        line.position.z = 0.05;
+        strandsGroup.add(line);
+      }
+
+      // 7) Reduced motion handling
+      const applyReducedMotion = (reduce) => {
+        state.reducedMotion = reduce;
+        state.motionFactor = reduce ? 0.12 : 1;
+        auraMaterial.uniforms.uMotion.value = state.motionFactor;
+        strandUniforms.uMotion.value = state.motionFactor;
+        if (bloomPass) bloomPass.strength = reduce ? 0.24 : 0.33;
+      };
+
+      if (typeof reduceMotionQuery.addEventListener === 'function') {
+        reduceMotionQuery.addEventListener('change', (e) => applyReducedMotion(e.matches));
+      } else if (typeof reduceMotionQuery.addListener === 'function') {
+        reduceMotionQuery.addListener((e) => applyReducedMotion(e.matches));
+      }
+
+      // UI interactions
+      startBtn.addEventListener('click', () => {
+        state.startImpulse = state.reducedMotion ? 0.2 : 1;
+      });
+
+      muteBtn.addEventListener('click', () => {
+        state.muted = !state.muted;
+        muteBtn.textContent = state.muted ? '🔇' : '🔊';
+        muteBtn.setAttribute('aria-pressed', state.muted ? 'true' : 'false');
+        muteBtn.setAttribute('aria-label', state.muted ? 'Ambient muted' : 'Ambient enabled');
+      });
+
+      const clamp = (v, min, max) => Math.min(max, Math.max(min, v));
+      window.addEventListener('pointermove', (ev) => {
+        if (state.reducedMotion) return;
+        const nx = (ev.clientX / window.innerWidth) * 2 - 1;
+        const ny = (ev.clientY / window.innerHeight) * 2 - 1;
+        state.pointerX = clamp(nx, -1, 1);
+        state.pointerY = clamp(ny, -1, 1);
+      }, { passive: true });
+
+      // 8) Resize & DPR handling
+      const resize = () => {
+        const w = window.innerWidth;
+        const h = window.innerHeight;
+        const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+
+        renderer.setPixelRatio(dpr);
+        renderer.setSize(w, h);
+        camera.aspect = w / h;
+        camera.updateProjectionMatrix();
+
+        auraMaterial.uniforms.uDpr.value = dpr;
+        shivaGroup.position.y = w < 768 ? 0.18 : 0.05;
+
+        if (composer) {
+          composer.setSize(w, h);
+          composer.setPixelRatio(dpr);
+          if (bloomPass) bloomPass.setSize(w, h);
+        }
+      };
+
+      window.addEventListener('resize', resize);
+      resize();
+      applyReducedMotion(state.reducedMotion);
+
+      // 9) Fallback path + render loop
+      const clock = new THREE.Clock();
+      const render = () => {
+        if (state.isFallback) return;
+        const t = clock.getElapsedTime();
+
+        if (!state.reducedMotion) {
+          state.parallaxX += (state.pointerX * 0.12 - state.parallaxX) * 0.04;
+          state.parallaxY += (state.pointerY * 0.08 - state.parallaxY) * 0.04;
+        } else {
+          state.parallaxX += (0 - state.parallaxX) * 0.08;
+          state.parallaxY += (0 - state.parallaxY) * 0.08;
+        }
+
+        cameraRig.position.x = state.parallaxX;
+        cameraRig.position.y = state.parallaxY;
+        camera.lookAt(0, 0.05, 0);
+
+        const breath = 0.5 + 0.5 * Math.sin(t * 0.55);
+        state.startImpulse += (0 - state.startImpulse) * 0.035;
+        const ritualPulse = 1 + state.startImpulse * 0.45;
+        shivaMaterial.uniforms.uPulse.value = breath * state.motionFactor * ritualPulse;
+
+        auraMaterial.uniforms.uTime.value = t;
+        strandUniforms.uTime.value = t;
+
+        const breathingScale = 1 + (state.reducedMotion ? 0.002 : 0.008) * Math.sin(t * 0.55);
+        shivaGroup.scale.setScalar(breathingScale);
+
+        strandsGroup.rotation.z = Math.sin(t * 0.07) * 0.05 * state.motionFactor;
+        dust.rotation.y = t * 0.012 * state.motionFactor;
+
+        if (composer) {
+          if (bloomPass) bloomPass.strength = (state.reducedMotion ? 0.24 : 0.33) + state.startImpulse * 0.09;
+          composer.render();
+        }
+        else renderer.render(scene, camera);
+
+        requestAnimationFrame(render);
+      };
+
+      requestAnimationFrame(render);
+    })();
+  </script>
+</body>
+</html>

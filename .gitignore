@@ -1,0 +1,15 @@
+.DS_Store
+Thumbs.db
+
+# Editor / OS
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+
+# Local temp artifacts
+tmp/
+*.tmp

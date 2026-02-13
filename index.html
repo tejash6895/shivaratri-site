@@ -1,0 +1,416 @@
+<!--
+  ╔══════════════════════════════════════════════════════════════╗
+  ║  JAGARANA WITH SHIVA — The 4 Prahar Journey                ║
+  ║  A quiet digital companion for Maha Shivaratri             ║
+  ╚══════════════════════════════════════════════════════════════╝
+
+  SETUP NOTES (Hostinger Single Web Hosting)
+  ═══════════════════════════════════════════
+  1. Upload these files to public_html/ via Hostinger File Manager:
+     - index.html
+     - styles.css
+     - app.js
+
+  2. OPTIONAL — Audio files:
+     Create folder: public_html/assets/audio/
+     Add: tap.mp3 (soft Om whisper, <10KB)
+          bell.mp3 (gentle bell, <15KB)
+     If files don't exist, audio features degrade gracefully.
+
+  3. OPTIONAL — Social sharing image:
+     Create: public_html/assets/og-image.png (1200×630px)
+     Dark background, gold Om symbol, title text.
+
+  4. OPTIONAL — Community (Phase 2):
+     See DEPLOY_HOSTINGER.md for Supabase setup if desired.
+     For now, community = "Share mantra" copy-to-clipboard only.
+
+  5. OPTIONAL — Telegram link:
+     In app.js, set TELEGRAM_LINK to your group URL.
+-->
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Jagarana with Shiva — Maha Shivaratri 4 Prahar Journey</title>
+  <meta name="description"
+    content="A quiet digital companion for Maha Shivaratri night. Tap 108 Rudraksha beads, reflect, meditate, and complete the Four Prahar journey.">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Jagarana with Shiva — 4 Prahar Journey">
+  <meta property="og:description"
+    content="Tap 108 Rudraksha beads, reflect, meditate, and complete the sacred night vigil.">
+  <meta property="og:image" content="assets/shiva.png">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <!-- Preconnect for Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Outfit:wght@300;400;500&display=swap"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css">
+
+  <!-- Favicon: inline SVG trident -->
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='28' font-size='28'>🔱</text></svg>">
+</head>
+
+<body>
+
+  <!-- ═══ STICKY HEADER ═══ -->
+  <header id="site-header" role="banner">
+    <div class="header-inner">
+      <div class="header-left">
+        <span class="header-title" aria-label="Jagarana with Shiva">ॐ Jagarana</span>
+      </div>
+      <div class="header-center" aria-label="Journey progress">
+        <div class="prahar-dots">
+          <span class="prahar-dot" data-prahar="1" aria-label="Prahar 1"></span>
+          <span class="prahar-dot" data-prahar="2" aria-label="Prahar 2"></span>
+          <span class="prahar-dot" data-prahar="3" aria-label="Prahar 3"></span>
+          <span class="prahar-dot" data-prahar="4" aria-label="Prahar 4"></span>
+        </div>
+        <span class="bead-counter" id="beadCounter" aria-live="polite">0/108</span>
+      </div>
+      <div class="header-right">
+        <button id="soundToggle" class="icon-btn" aria-label="Enable sound" aria-pressed="false" title="Enable sound">
+          <svg class="icon-sound-on" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2" style="display:none">
+            <path d="M11 5L6 9H2v6h4l5 4V5z" />
+            <path d="M19.07 4.93a10 10 0 010 14.14M15.54 8.46a5 5 0 010 7.07" />
+          </svg>
+          <svg class="icon-sound-off" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <path d="M11 5L6 9H2v6h4l5 4V5z" />
+            <line x1="23" y1="9" x2="17" y2="15" />
+            <line x1="17" y1="9" x2="23" y2="15" />
+          </svg>
+        </button>
+      </div>
+    </div>
+    <!-- Mini timer (shown when meditation timer is active) -->
+    <div id="miniTimer" class="mini-timer" style="display:none" aria-live="polite">
+      <span id="miniTimerText">11:00</span>
+    </div>
+  </header>
+
+  <div id="storageWarning" class="storage-warning" role="status" aria-live="polite" hidden></div>
+
+  <!-- ═══ PARTICLES BACKGROUND ═══ -->
+  <div class="particles" aria-hidden="true">
+    <span class="particle"></span><span class="particle"></span>
+    <span class="particle"></span><span class="particle"></span>
+    <span class="particle"></span><span class="particle"></span>
+    <span class="particle"></span><span class="particle"></span>
+    <span class="particle"></span><span class="particle"></span>
+    <span class="particle"></span><span class="particle"></span>
+    <span class="particle"></span><span class="particle"></span>
+    <span class="particle"></span><span class="particle"></span>
+  </div>
+
+  <main>
+    <!-- ═══ SECTION 1: HERO ═══ -->
+    <section id="hero" class="section hero-section">
+      <div class="hero-scene-layer" aria-hidden="true">
+        <canvas id="heroCanvas" class="hero-canvas"></canvas>
+        <div class="hero-head-halo"></div>
+        <div class="hero-motif">ॐ</div>
+        <div id="heroFallback" class="hero-fallback" hidden>
+          <figure class="hero-fallback-figure">
+            <img src="assets/shiva.png" alt="Shiva in sacred stillness">
+            <div class="hero-fallback-glow"></div>
+          </figure>
+        </div>
+      </div>
+
+      <div class="container hero-content">
+        <div class="hero-copy-panel">
+          <h1 class="hero-title">Jagarana with Shiva</h1>
+          <p class="hero-subtitle">A quiet digital companion for Maha Shivaratri.</p>
+          <p class="hero-body">Tap a digital Rudraksha mala, reflect, meditate, and complete the Four Prahar journey.
+            Generate a Jagarana Certificate when complete.</p>
+          <p class="hero-note">Sound is optional and off by default.</p>
+          <div class="hero-actions">
+            <button id="beginBtn" class="btn btn-primary" onclick="App.scrollToSection('mala')">Begin My Jagarana</button>
+            <button id="continueBtn" class="btn btn-secondary" style="display:none"
+              onclick="App.scrollToCurrent()">Continue My Journey</button>
+          </div>
+        </div>
+
+        <details class="how-it-works hero-how">
+          <summary>How it works</summary>
+          <div class="how-steps">
+            <div class="how-step">
+              <div class="how-icon">📿</div>
+              <div><strong>Tap</strong><br>108 Rudraksha beads, 4 times</div>
+            </div>
+            <div class="how-step">
+              <div class="how-icon">🪷</div>
+              <div><strong>Reflect</strong><br>Contemplate Shiva's wisdom</div>
+            </div>
+            <div class="how-step">
+              <div class="how-icon">🧘</div>
+              <div><strong>Meditate</strong><br>11 minutes of stillness</div>
+            </div>
+            <div class="how-step">
+              <div class="how-icon">📜</div>
+              <div><strong>Certificate</strong><br>Honor your night vigil</div>
+            </div>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <!-- ═══ SECTION 2: DIGITAL RUDRAKSHA MALA ═══ -->
+    <section id="mala" class="section mala-section">
+      <div class="container">
+        <h2 class="section-title">Digital Rudraksha Mala</h2>
+        <p class="section-subtitle">Prahar <span id="currentPrahar">1</span> of 4 · Mala <span
+            id="currentMalaNum">1</span></p>
+
+        <!-- Tap order toggle -->
+        <div class="mala-toggle-row">
+          <label class="toggle-label" for="tapOrderToggle">
+            <input type="checkbox" id="tapOrderToggle" checked>
+            <span class="toggle-switch"></span>
+            <span class="toggle-text">Tap in order <span class="toggle-hint">(recommended)</span></span>
+          </label>
+        </div>
+
+        <!-- Meru bead -->
+        <div class="meru-bead" aria-label="Meru bead — center of the mala">ॐ</div>
+
+        <!-- 108 Bead Grid -->
+        <div id="beadGrid" class="bead-grid" role="grid" aria-label="108 Rudraksha beads">
+          <!-- Beads injected by JS -->
+        </div>
+
+        <!-- Milestone message -->
+        <div id="milestoneMsg" class="milestone-msg" aria-live="polite"></div>
+
+        <!-- Hint for tap-in-order mode -->
+        <div id="tapHint" class="tap-hint" aria-live="polite"></div>
+
+        <!-- Mala controls -->
+        <div class="mala-controls">
+          <button id="resetMalaBtn" class="btn btn-ghost" onclick="App.Mala.resetCurrent()">Reset Mala</button>
+          <button id="nextMalaBtn" class="btn btn-primary" style="display:none" onclick="App.Mala.startNext()">Start
+            Next Mala</button>
+        </div>
+
+        <!-- Mala complete overlay -->
+        <div id="malaCompleteOverlay" class="mala-overlay" style="display:none">
+          <div class="mala-overlay-content">
+            <div class="mala-complete-icon">✦</div>
+            <h3>Mala Complete</h3>
+            <p>Take 10 slow breaths before continuing.</p>
+            <div id="cooldownTimer" class="cooldown-timer"></div>
+            <button id="continueAfterMala" class="btn btn-primary" style="display:none"
+              onclick="App.Mala.dismissOverlay()">Continue to Reflection</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ SECTION 3: REFLECTION CARDS ═══ -->
+    <section id="reflection" class="section reflection-section">
+      <div class="container">
+        <h2 class="section-title">Shiva Reflection</h2>
+        <p class="section-subtitle" id="reflectionSubtitle">Complete a mala to unlock reflections.</p>
+
+        <div id="reflectionCard" class="reflection-card" style="display:none">
+          <div class="reflection-quote" id="reflectionPrompt"></div>
+          <div class="reflection-meaning" id="reflectionMeaning"></div>
+          <div class="reflection-source" id="reflectionSource"></div>
+          <button class="btn btn-secondary" onclick="App.Reflection.next()">Reflect & Continue</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ SECTION 4: MINI CHALLENGE (QUIZ) ═══ -->
+    <section id="quiz" class="section quiz-section">
+      <div class="container">
+        <h2 class="section-title">Insight Challenge</h2>
+        <p class="section-subtitle">Test your awareness of Shiva's stories and symbolism.</p>
+
+        <div id="quizContainer" class="quiz-container">
+          <div id="quizCard" class="quiz-card">
+            <p class="quiz-question" id="quizQuestion"></p>
+            <div id="quizOptions" class="quiz-options"></div>
+            <div id="quizFeedback" class="quiz-feedback" style="display:none"></div>
+            <button id="quizNextBtn" class="btn btn-secondary" style="display:none" onclick="App.Quiz.next()">Next
+              Question</button>
+          </div>
+          <p class="quiz-progress" id="quizProgress"></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ SECTION 5: STILLNESS TIMER ═══ -->
+    <section id="meditation" class="section meditation-section">
+      <div class="container">
+        <h2 class="section-title">Stillness Timer</h2>
+        <p class="section-subtitle">Sit with Shiva in silence.</p>
+
+        <!-- Duration presets -->
+        <div class="timer-presets">
+          <button class="preset-btn" data-minutes="5" onclick="App.Timer.setDuration(5)">5 min</button>
+          <button class="preset-btn active" data-minutes="11" onclick="App.Timer.setDuration(11)">11 min</button>
+          <button class="preset-btn" data-minutes="21" onclick="App.Timer.setDuration(21)">21 min</button>
+        </div>
+
+        <!-- Breathing circle -->
+        <div class="breathing-wrapper">
+          <div id="breathingCircle" class="breathing-circle">
+            <span id="breathingText" class="breathing-text">Ready</span>
+            <span id="timerDisplay" class="timer-display">11:00</span>
+          </div>
+        </div>
+
+        <div class="timer-controls">
+          <button id="timerStartBtn" class="btn btn-primary" onclick="App.Timer.toggle()">Start</button>
+          <button id="timerResetBtn" class="btn btn-ghost" onclick="App.Timer.reset()">Reset</button>
+        </div>
+
+        <div id="meditationComplete" class="meditation-complete" style="display:none">
+          <p>You have touched stillness. 🙏</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ SECTION 6: CERTIFICATE ═══ -->
+    <section id="certificate" class="section certificate-section">
+      <div class="container">
+        <h2 class="section-title">Jagarana Certificate</h2>
+        <p class="section-subtitle">Honor your night vigil.</p>
+
+        <!-- Requirements checklist -->
+        <div id="certChecklist" class="cert-checklist">
+          <div class="cert-req" id="reqMala">
+            <span class="cert-check">○</span>
+            <span>Complete 4 Malas (432 beads)</span>
+            <a href="#mala" class="cert-link" onclick="App.scrollToSection('mala')">Go →</a>
+          </div>
+          <div class="cert-req" id="reqQuiz">
+            <span class="cert-check">○</span>
+            <span>Attempt at least 1 quiz question</span>
+            <a href="#quiz" class="cert-link" onclick="App.scrollToSection('quiz')">Go →</a>
+          </div>
+          <div class="cert-req" id="reqMeditation">
+            <span class="cert-check">○</span>
+            <span>Complete a meditation session</span>
+            <a href="#meditation" class="cert-link" onclick="App.scrollToSection('meditation')">Go →</a>
+          </div>
+        </div>
+
+        <!-- Certificate form (shown when unlocked) -->
+        <div id="certForm" class="cert-form" style="display:none">
+          <p class="cert-unlocked-msg">✦ All requirements fulfilled. Generate your certificate.</p>
+          <div class="cert-input-group">
+            <label for="certName">Your Name</label>
+            <input type="text" id="certName" placeholder="Enter your name" maxlength="50" required>
+          </div>
+          <div class="cert-input-group">
+            <label for="certGotra">Gotra or Location <span class="optional">(optional)</span></label>
+            <input type="text" id="certGotra" placeholder="e.g., Bharadwaja / Varanasi" maxlength="30">
+          </div>
+          <button class="btn btn-primary btn-large" onclick="App.Certificate.generate()">Generate Jagarana
+            Certificate</button>
+          <p id="certStatus" class="cert-status" style="display:none" aria-live="polite"></p>
+        </div>
+
+        <!-- Share button -->
+        <div id="certShare" style="display:none">
+          <button class="btn btn-ghost" onclick="App.Certificate.share()">📋 Copy sharing text</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ SECTION 7: COMMUNITY / SHARE ═══ -->
+    <section id="community" class="section community-section">
+      <div class="container">
+        <h2 class="section-title">Sangha</h2>
+        <p class="section-subtitle">Share a blessing with fellow seekers.</p>
+
+        <div class="share-mantra">
+          <textarea id="mantraInput" class="mantra-input" maxlength="80" rows="2"
+            placeholder="Write a short blessing or mantra…"></textarea>
+          <button class="btn btn-secondary" onclick="App.Community.copyMantra()">Copy Blessing</button>
+        </div>
+
+        <div id="telegramLink" class="telegram-link" style="display:none">
+          <a href="#" id="telegramAnchor" target="_blank" rel="noopener">Join the Telegram Sangha →</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ═══ FOOTER ═══ -->
+  <footer class="site-footer">
+    <div class="container">
+      <p class="footer-mantra">ॐ नमः शिवाय</p>
+      <p class="footer-text">Om Namah Shivaya</p>
+      <button class="btn btn-ghost btn-small" onclick="App.resetAll()">Reset All Progress</button>
+    </div>
+  </footer>
+
+  <!-- ═══ MIDNIGHT OVERLAY ═══ -->
+  <div id="midnightOverlay" class="midnight-overlay" style="display:none">
+    <div class="midnight-content">
+      <svg class="midnight-om" viewBox="0 0 100 100" width="80" height="80">
+        <text x="50" y="70" text-anchor="middle" font-size="60" fill="var(--gold)" font-family="serif">ॐ</text>
+      </svg>
+      <h2>It is midnight — the hour of Shiva</h2>
+      <p>Sit in silence for five minutes.</p>
+      <div id="midnightTimer" class="midnight-timer">5:00</div>
+      <button id="midnightStartBtn" class="btn btn-primary" onclick="App.Midnight.start()">Enter Stillness</button>
+      <a href="#" class="midnight-dismiss" onclick="App.Midnight.dismiss(); return false;">I'll meditate later</a>
+    </div>
+  </div>
+
+  <!-- ═══ RESET CONFIRMATION MODAL ═══ -->
+  <div id="resetModal" class="modal-overlay" style="display:none">
+    <div class="modal-content">
+      <h3>Reset All Progress?</h3>
+      <p>This cannot be undone. Type <strong>RESET</strong> to confirm.</p>
+      <input type="text" id="resetConfirmInput" class="reset-input" placeholder="Type RESET">
+      <div class="modal-actions">
+        <button class="btn btn-ghost" onclick="App.closeResetModal()">Cancel</button>
+        <button class="btn btn-danger" onclick="App.confirmReset()">Reset Everything</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ CERTIFICATE PRINT TEMPLATE (hidden, for fallback) ═══ -->
+  <div id="certPrintTemplate" class="cert-print-template">
+    <div class="cert-print-inner">
+      <div class="cert-print-border">
+        <div class="cert-print-trident">🔱</div>
+        <h1>Jagarana Certificate</h1>
+        <p class="cert-print-body">This is to honor that <strong id="certPrintName"></strong><span
+            id="certPrintGotra"></span> completed the Four Prahar Jagarana on Maha Shivaratri <span
+            id="certPrintDate"></span>, having meditated, reflected, and kept the sacred night vigil.</p>
+        <p class="cert-print-stats" id="certPrintStats"></p>
+        <p class="cert-print-id" id="certPrintId"></p>
+        <p class="cert-print-closing">ॐ नमः शिवाय &nbsp;|&nbsp; Om Namah Shivaya</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hero scene runtime -->
+  <script defer src="https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/three@0.161.0/examples/js/postprocessing/EffectComposer.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/three@0.161.0/examples/js/postprocessing/RenderPass.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/three@0.161.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+  <script defer src="hero.js"></script>
+
+  <!-- jsPDF CDN (lazy loaded by app.js only when needed) -->
+  <script defer src="app.js"></script>
+</body>
+
+</html>

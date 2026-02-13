@@ -27,6 +27,7 @@
       if (state.fallbackMode) return;
       state.fallbackMode = true;
       canvas.style.display = 'none';
+      section.classList.remove('hero-webgl-active');
       section.classList.add('hero-fallback-active');
       fallback.hidden = false;
       console.warn('[hero] fallback mode:', reason);
@@ -48,6 +49,9 @@
       showFallback('WebGL unavailable or Three.js not loaded');
       return;
     }
+
+    // Mark hero as WebGL-active so CSS hides the fallback image
+    section.classList.add('hero-webgl-active');
 
     const renderer = new THREE.WebGLRenderer({
       canvas,

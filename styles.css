@@ -56,7 +56,7 @@ body {
 
 /* ─── UTILITIES ─── */
 .container {
-  max-width: 640px;
+  max-width: 680px;
   margin: 0 auto;
   padding: 0 var(--space-lg);
 }
@@ -68,13 +68,28 @@ body {
   scroll-margin-top: calc(var(--header-height) + 20px);
 }
 
+.section + .section {
+  border-top: 1px solid rgba(255, 255, 255, 0.03);
+}
+
 .section-title {
   font-family: var(--font-heading);
   font-weight: 600;
-  font-size: 1.75rem;
+  font-size: 1.85rem;
   color: var(--text-primary);
   margin-bottom: var(--space-sm);
   text-align: center;
+  letter-spacing: 0.01em;
+}
+
+.section-title::after {
+  content: '';
+  display: block;
+  width: 40px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  margin: var(--space-sm) auto 0;
+  border-radius: 1px;
 }
 
 .section-subtitle {
@@ -114,8 +129,8 @@ body {
   color: #0a0a1a;
   font-weight: 500;
 }
-.btn-primary:hover { filter: brightness(1.1); transform: translateY(-1px); }
-.btn-primary:active { transform: translateY(0); }
+.btn-primary:hover { filter: brightness(1.1); transform: translateY(-1px); box-shadow: 0 4px 20px rgba(212, 168, 67, 0.3); }
+.btn-primary:active { transform: translateY(0); box-shadow: none; }
 
 .btn-secondary {
   background: var(--bg-elevated);
@@ -180,7 +195,7 @@ body {
 }
 
 .header-inner {
-  max-width: 640px;
+  max-width: 680px;
   margin: 0 auto;
   display: flex;
   align-items: center;
@@ -415,6 +430,15 @@ body {
 
 .hero-fallback[hidden] { display: none; }
 
+/* Show fallback by default via CSS, hero.js hides it if WebGL works */
+.hero-section:not(.hero-webgl-active) .hero-fallback {
+  display: grid;
+}
+
+.hero-section:not(.hero-webgl-active) .hero-canvas {
+  opacity: 0;
+}
+
 .hero-fallback-figure {
   position: relative;
   width: clamp(300px, 72vw, 640px);
@@ -457,16 +481,14 @@ body {
   object-fit: cover;
   object-position: 50% 30%;
   display: block;
-  filter: saturate(0.98) contrast(1.08) brightness(0.98);
+  filter: saturate(1.05) contrast(1.1) brightness(0.95);
   image-rendering: auto;
   image-rendering: -webkit-optimize-contrast;
-  /* Feather mask: radial + linear gradients dissolve hard edges into darkness. */
+  /* Feather mask: dissolve edges into the dark background. */
   mask-image:
-    radial-gradient(ellipse 68% 72% at 50% 36%, #000 36%, rgba(0, 0, 0, 0.94) 58%, rgba(0, 0, 0, 0.44) 80%, transparent 98%),
-    linear-gradient(to bottom, transparent 0%, #000 11%, #000 82%, transparent 100%);
+    radial-gradient(ellipse 74% 78% at 50% 38%, #000 40%, rgba(0, 0, 0, 0.9) 60%, rgba(0, 0, 0, 0.3) 82%, transparent 96%);
   -webkit-mask-image:
-    radial-gradient(ellipse 68% 72% at 50% 36%, #000 36%, rgba(0, 0, 0, 0.94) 58%, rgba(0, 0, 0, 0.44) 80%, transparent 98%),
-    linear-gradient(to bottom, transparent 0%, #000 11%, #000 82%, transparent 100%);
+    radial-gradient(ellipse 74% 78% at 50% 38%, #000 40%, rgba(0, 0, 0, 0.9) 60%, rgba(0, 0, 0, 0.3) 82%, transparent 96%);
   mask-size: 100% 100%;
   -webkit-mask-size: 100% 100%;
   mask-repeat: no-repeat;
@@ -492,10 +514,10 @@ body {
   min-height: calc(96dvh - var(--header-height) - env(safe-area-inset-top, 0px));
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
+  justify-content: center;
   align-items: center;
-  gap: clamp(10px, 2.5vh, 22px);
-  padding-bottom: clamp(8px, 2.2vh, 24px);
+  gap: clamp(14px, 3vh, 28px);
+  padding-bottom: clamp(12px, 3vh, 32px);
 }
 
 .hero-content.container {
@@ -505,25 +527,21 @@ body {
 .hero-copy-panel {
   position: relative;
   width: min(100%, 700px);
-  padding: clamp(16px, 3vw, 30px) clamp(16px, 3.2vw, 34px);
-  border-radius: clamp(22px, 4vw, 42px);
-  border: 0;
-  background: linear-gradient(180deg, rgba(12, 15, 28, 0.26), rgba(8, 11, 21, 0.22));
-  box-shadow: none;
-  backdrop-filter: blur(8px) saturate(1.04);
-  -webkit-backdrop-filter: blur(8px) saturate(1.04);
-  mask-image: radial-gradient(ellipse at 50% 46%, #000 52%, rgba(0, 0, 0, 0.84) 74%, transparent 100%);
-  -webkit-mask-image: radial-gradient(ellipse at 50% 46%, #000 52%, rgba(0, 0, 0, 0.84) 74%, transparent 100%);
+  padding: clamp(20px, 3.5vw, 36px) clamp(20px, 3.5vw, 40px);
+  border-radius: clamp(18px, 3vw, 32px);
+  border: 1px solid rgba(212, 168, 67, 0.08);
+  background: linear-gradient(180deg, rgba(12, 15, 28, 0.62), rgba(8, 11, 21, 0.54));
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(16px) saturate(1.1);
+  -webkit-backdrop-filter: blur(16px) saturate(1.1);
 }
 
 .hero-copy-panel::before {
   content: '';
   position: absolute;
-  inset: -18px -24px -16px;
-  border-radius: clamp(24px, 5vw, 50px);
-  background:
-    radial-gradient(130% 104% at 50% 28%, rgba(20, 24, 42, 0.74) 0%, rgba(10, 13, 24, 0.54) 50%, rgba(8, 11, 21, 0.08) 80%, transparent 100%);
-  filter: blur(14px);
+  inset: -2px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(212, 168, 67, 0.1), transparent 50%, rgba(212, 168, 67, 0.05));
   z-index: -1;
   pointer-events: none;
 }
@@ -534,33 +552,33 @@ body {
 
 .hero-title {
   font-family: var(--font-heading);
-  /* Fluid typography via clamp() keeps heading balanced from small phones to desktop. */
-  font-size: clamp(2.1rem, 5.8vw, 4.15rem);
+  font-size: clamp(2.2rem, 6vw, 4.2rem);
   font-weight: 600;
-  line-height: 1.04;
+  line-height: 1.08;
   color: #f1e9dc;
-  margin: 0 auto clamp(8px, 1.5vh, 14px);
-  max-width: 12ch;
-  letter-spacing: 0.01em;
+  margin: 0 auto clamp(10px, 1.8vh, 16px);
+  max-width: 14ch;
+  letter-spacing: 0.02em;
   text-wrap: balance;
-  text-shadow: 0 10px 32px rgba(0, 0, 0, 0.52);
+  text-shadow: 0 2px 16px rgba(212, 168, 67, 0.15), 0 8px 32px rgba(0, 0, 0, 0.6);
 }
 
 .hero-subtitle {
-  font-size: clamp(0.96rem, 2.1vw, 1.22rem);
-  color: #d5c8af;
-  font-weight: 300;
-  margin-bottom: clamp(6px, 1.8vh, 12px);
-  text-shadow: 0 6px 24px rgba(0, 0, 0, 0.48);
+  font-size: clamp(1rem, 2.2vw, 1.28rem);
+  color: var(--gold);
+  font-weight: 400;
+  margin-bottom: clamp(8px, 2vh, 14px);
+  letter-spacing: 0.04em;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
 }
 
 .hero-body {
-  font-size: clamp(0.92rem, 1.8vw, 1.03rem);
-  color: #c6b99f;
-  max-width: 62ch;
-  margin: 0 auto clamp(16px, 3.2vh, 28px);
-  line-height: 1.6;
-  text-shadow: 0 6px 20px rgba(0, 0, 0, 0.42);
+  font-size: clamp(0.94rem, 1.9vw, 1.06rem);
+  color: var(--text-secondary);
+  max-width: 52ch;
+  margin: 0 auto clamp(16px, 3vh, 24px);
+  line-height: 1.7;
+  text-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
 }
 
 .hero-note {
@@ -573,15 +591,21 @@ body {
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  width: min(100%, 360px);
+  width: min(100%, 340px);
   margin: 0 auto;
   gap: clamp(10px, 1.6vh, 14px);
 }
 
 .hero-actions .btn {
   width: 100%;
-  min-height: 48px;
+  min-height: 52px;
   border-radius: 14px;
+  font-size: 1rem;
+  letter-spacing: 0.02em;
+}
+
+.hero-actions .btn-primary {
+  box-shadow: 0 4px 24px rgba(212, 168, 67, 0.25);
 }
 
 .hero-how {
@@ -681,17 +705,23 @@ body {
 
 /* Meru bead */
 .meru-bead {
-  width: 48px;
-  height: 48px;
+  width: 52px;
+  height: 52px;
   margin: 0 auto var(--space-lg);
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 50%;
   border: 2px solid var(--gold);
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   color: var(--gold);
-  background: rgba(212, 168, 67, 0.05);
+  background: rgba(212, 168, 67, 0.06);
+  box-shadow: 0 0 16px rgba(212, 168, 67, 0.12), inset 0 0 12px rgba(212, 168, 67, 0.05);
+  transition: box-shadow var(--transition);
+}
+
+.meru-bead:hover {
+  box-shadow: 0 0 24px rgba(212, 168, 67, 0.2), inset 0 0 16px rgba(212, 168, 67, 0.08);
 }
 
 /* 108 Bead Grid: 12 columns × 9 rows */
@@ -709,8 +739,8 @@ body {
 .bead {
   aspect-ratio: 1;
   border-radius: 50%;
-  background: radial-gradient(circle at 35% 35%, #7a5240, var(--bead-base) 60%, #3d261c);
-  border: 1px solid rgba(92, 61, 46, 0.6);
+  background: radial-gradient(circle at 38% 32%, #8a5e48, var(--bead-base) 55%, #3d261c);
+  border: 1px solid rgba(92, 61, 46, 0.5);
   cursor: pointer;
   transition: all 0.2s ease;
   position: relative;
@@ -720,6 +750,7 @@ body {
   min-width: 24px;
   min-height: 24px;
   touch-action: manipulation;
+  box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.08), 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 .bead:focus-visible {
@@ -728,10 +759,10 @@ body {
 }
 
 .bead.tapped {
-  background: radial-gradient(circle at 35% 35%, #e8c35a, var(--bead-tapped) 60%, #a07828);
+  background: radial-gradient(circle at 38% 32%, #f0d060, var(--bead-tapped) 55%, #a07828);
   border-color: var(--gold);
-  box-shadow: 0 0 8px var(--gold-glow);
-  transform: scale(1.08);
+  box-shadow: 0 0 10px var(--gold-glow), inset 0 1px 3px rgba(255, 255, 255, 0.15);
+  transform: scale(1.06);
   cursor: default;
 }
 
@@ -817,10 +848,11 @@ body {
 .reflection-card {
   background: var(--bg-surface);
   border-left: 3px solid var(--gold);
-  border-radius: 0 var(--radius) var(--radius) 0;
-  padding: var(--space-lg);
+  border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+  padding: var(--space-lg) var(--space-xl);
   margin-bottom: var(--space-lg);
   animation: slide-up 0.4s ease;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
 }
 
 .reflection-quote {
@@ -850,8 +882,10 @@ body {
 .quiz-card {
   background: var(--bg-surface);
   border-radius: var(--radius-lg);
-  padding: var(--space-lg);
+  padding: var(--space-lg) var(--space-xl);
   margin-bottom: var(--space-md);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.04);
 }
 
 .quiz-question {
@@ -973,11 +1007,13 @@ body {
   align-items: center;
   justify-content: center;
   position: relative;
-  transition: transform 4s ease-in-out, border-color 0.5s ease;
+  transition: transform 4s ease-in-out, border-color 0.5s ease, box-shadow 0.5s ease;
+  background: radial-gradient(circle, rgba(212, 168, 67, 0.03) 0%, transparent 70%);
 }
 
 .breathing-circle.active {
   border-color: var(--gold);
+  box-shadow: 0 0 30px rgba(212, 168, 67, 0.1), inset 0 0 20px rgba(212, 168, 67, 0.03);
 }
 
 .breathing-circle.inhale  { transform: scale(1.15); transition-duration: 4s; }
@@ -1062,8 +1098,9 @@ body {
 .cert-unlocked-msg {
   color: var(--gold);
   font-family: var(--font-heading);
-  font-size: 1.1rem;
+  font-size: 1.15rem;
   margin-bottom: var(--space-lg);
+  text-shadow: 0 0 20px rgba(212, 168, 67, 0.15);
 }
 
 .cert-input-group {
@@ -1110,7 +1147,7 @@ body {
 
 /* ─── COMMUNITY ─── */
 .community-section {
-  border-top: 1px solid rgba(255,255,255,0.03);
+  /* separator handled by .section + .section rule */
 }
 
 .mantra-input {
@@ -1146,14 +1183,16 @@ body {
 .site-footer {
   text-align: center;
   padding: var(--space-2xl) var(--space-lg);
-  border-top: 1px solid rgba(255,255,255,0.03);
+  border-top: 1px solid rgba(212, 168, 67, 0.08);
+  background: linear-gradient(to top, rgba(10, 10, 26, 1), transparent);
 }
 
 .footer-mantra {
   font-family: var(--font-heading);
-  font-size: 1.25rem;
+  font-size: 1.35rem;
   color: var(--gold);
   margin-bottom: var(--space-xs);
+  letter-spacing: 0.03em;
 }
 
 .footer-text {
@@ -1310,15 +1349,18 @@ body {
 /* ─── RESPONSIVE ─── */
 @media (max-width: 480px) {
   .bead-grid { gap: 4px; padding: var(--space-sm); }
-  .bead { min-width: 20px; min-height: 20px; }
+  .bead { min-width: 22px; min-height: 22px; }
   .header-title { font-size: 0.95rem; }
   .hero-section { min-height: 100dvh; }
-  .hero-copy-panel { padding: 14px 14px 16px; }
-  .hero-body { max-width: 34ch; }
-  .hero-actions { width: min(100%, 320px); }
+  .hero-copy-panel { padding: 18px 16px 20px; }
+  .hero-body { max-width: 38ch; }
+  .hero-actions { width: min(100%, 300px); }
   .section { padding: var(--space-lg) 0; }
   .breathing-circle { width: 170px; height: 170px; }
   .timer-display { font-size: 2rem; }
+  .section-title { font-size: 1.5rem; }
+  .reflection-card { padding: var(--space-md) var(--space-lg); }
+  .quiz-card { padding: var(--space-md) var(--space-lg); }
 }
 
 @media (min-width: 768px) {

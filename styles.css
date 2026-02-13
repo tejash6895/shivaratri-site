@@ -441,7 +441,7 @@ body {
 
 .hero-fallback-figure {
   position: relative;
-  width: clamp(300px, 72vw, 640px);
+  width: clamp(340px, 88vw, 1040px);
   aspect-ratio: 10 / 16;
   max-height: min(84dvh, 940px);
   overflow: visible;
@@ -509,8 +509,8 @@ body {
 .hero-content {
   position: relative;
   z-index: 2;
-  width: min(100%, 820px);
-  max-width: min(1100px, 100%);
+  width: 100%;
+  max-width: none;
   min-height: calc(96dvh - var(--header-height) - env(safe-area-inset-top, 0px));
   display: flex;
   flex-direction: column;
@@ -521,12 +521,13 @@ body {
 }
 
 .hero-content.container {
+  max-width: none;
   padding-inline: clamp(16px, 3vw, 30px);
 }
 
 .hero-copy-panel {
   position: relative;
-  width: min(100%, 700px);
+  width: min(92vw, 920px);
   padding: clamp(20px, 3.5vw, 36px) clamp(20px, 3.5vw, 40px);
   border-radius: clamp(18px, 3vw, 32px);
   border: none;
@@ -586,7 +587,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  width: min(100%, 340px);
+  width: min(100%, 400px);
   margin: 0 auto;
   gap: clamp(10px, 1.6vh, 14px);
 }
@@ -1349,7 +1350,7 @@ body {
   .hero-section { min-height: 100dvh; }
   .hero-copy-panel { padding: 18px 16px 20px; }
   .hero-body { max-width: 38ch; }
-  .hero-actions { width: min(100%, 300px); }
+  .hero-actions { width: min(100%, 320px); }
   .section { padding: var(--space-lg) 0; }
   .breathing-circle { width: 170px; height: 170px; }
   .timer-display { font-size: 2rem; }
@@ -1359,9 +1360,9 @@ body {
 }
 
 @media (min-width: 768px) {
-  .hero-content { width: min(100%, 980px); }
-  .hero-fallback-figure { width: clamp(360px, 46vw, 760px); }
-  .hero-copy-panel { width: min(100%, 760px); }
+  .hero-content { width: 100%; }
+  .hero-fallback-figure { width: clamp(560px, 70vw, 1240px); }
+  .hero-copy-panel { width: min(84vw, 1020px); }
   .hero-title { max-width: 13ch; }
   .hero-how { width: min(100%, 580px); }
   .section { padding: var(--space-2xl) 0; }
@@ -1369,7 +1370,8 @@ body {
 }
 
 @media (min-width: 1200px) {
-  .hero-fallback-figure { width: clamp(420px, 42vw, 820px); }
+  .hero-fallback-figure { width: clamp(760px, 66vw, 1520px); }
+  .hero-copy-panel { width: min(76vw, 1120px); }
   .hero-content { padding-bottom: clamp(14px, 3.6vh, 34px); }
 }
 

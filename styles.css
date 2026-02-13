@@ -421,7 +421,7 @@ body {
 .hero-fallback {
   position: absolute;
   inset: 0;
-  display: grid;
+  display: none;
   place-items: center;
   padding: calc(var(--header-height) + env(safe-area-inset-top, 0px) + 10px) 16px max(14px, env(safe-area-inset-bottom, 0px));
   pointer-events: none;
@@ -430,7 +430,7 @@ body {
 
 .hero-fallback[hidden] { display: none; }
 
-/* Show fallback by default via CSS, hero.js hides it if WebGL works */
+/* Show fallback only when WebGL mode is not active */
 .hero-section:not(.hero-webgl-active) .hero-fallback {
   display: grid;
 }

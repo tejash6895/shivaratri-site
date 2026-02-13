@@ -371,7 +371,7 @@ body {
   pointer-events: none;
   background:
     radial-gradient(ellipse at 50% 45%, rgba(0, 0, 0, 0) 38%, rgba(0, 0, 0, 0.4) 76%, rgba(0, 0, 0, 0.72) 98%),
-    linear-gradient(to bottom, rgba(0, 0, 0, 0.04), rgba(0, 0, 0, 0.5) 88%);
+    linear-gradient(to bottom, rgba(0, 0, 0, 0) 40%, rgba(0, 0, 0, 0.55) 70%, rgba(0, 0, 0, 0.8) 90%);
   z-index: 0;
 }
 
@@ -514,10 +514,10 @@ body {
   min-height: calc(96dvh - var(--header-height) - env(safe-area-inset-top, 0px));
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-end;
   align-items: center;
   gap: clamp(14px, 3vh, 28px);
-  padding-bottom: clamp(12px, 3vh, 32px);
+  padding-bottom: clamp(24px, 5vh, 48px);
 }
 
 .hero-content.container {
@@ -529,25 +529,17 @@ body {
   width: min(100%, 700px);
   padding: clamp(20px, 3.5vw, 36px) clamp(20px, 3.5vw, 40px);
   border-radius: clamp(18px, 3vw, 32px);
-  border: 1px solid rgba(212, 168, 67, 0.08);
-  background: linear-gradient(180deg, rgba(12, 15, 28, 0.62), rgba(8, 11, 21, 0.54));
-  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(16px) saturate(1.1);
-  -webkit-backdrop-filter: blur(16px) saturate(1.1);
+  border: none;
+  background: transparent;
+  box-shadow: none;
 }
 
 .hero-copy-panel::before {
-  content: '';
-  position: absolute;
-  inset: -2px;
-  border-radius: inherit;
-  background: linear-gradient(135deg, rgba(212, 168, 67, 0.1), transparent 50%, rgba(212, 168, 67, 0.05));
-  z-index: -1;
-  pointer-events: none;
+  display: none;
 }
 
 .hero-fallback-active .hero-copy-panel {
-  background: linear-gradient(180deg, rgba(10, 13, 24, 0.28), rgba(8, 11, 21, 0.24));
+  background: transparent;
 }
 
 .hero-title {
@@ -560,7 +552,10 @@ body {
   max-width: 14ch;
   letter-spacing: 0.02em;
   text-wrap: balance;
-  text-shadow: 0 2px 16px rgba(212, 168, 67, 0.15), 0 8px 32px rgba(0, 0, 0, 0.6);
+  text-shadow:
+    0 2px 20px rgba(212, 168, 67, 0.18),
+    0 4px 40px rgba(0, 0, 0, 0.85),
+    0 0 80px rgba(0, 0, 0, 0.5);
 }
 
 .hero-subtitle {
@@ -569,7 +564,7 @@ body {
   font-weight: 400;
   margin-bottom: clamp(8px, 2vh, 14px);
   letter-spacing: 0.04em;
-  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.8), 0 0 60px rgba(0, 0, 0, 0.4);
 }
 
 .hero-body {
@@ -578,7 +573,7 @@ body {
   max-width: 52ch;
   margin: 0 auto clamp(16px, 3vh, 24px);
   line-height: 1.7;
-  text-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+  text-shadow: 0 2px 16px rgba(0, 0, 0, 0.85), 0 0 40px rgba(0, 0, 0, 0.5);
 }
 
 .hero-note {

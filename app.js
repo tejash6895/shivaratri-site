@@ -126,6 +126,7 @@ const SoundManager = (() => {
   let audioReady = false;
   let userInteracted = false;
   let interactionBound = false;
+  let audioContext = null;
 
   function init() {
     enabled = Boolean(State.get().soundEnabled);
@@ -147,14 +148,16 @@ const SoundManager = (() => {
     try {
       tapSound = new Audio('assets/audio/tap.mp3');
       tapSound.volume = 0.3;
-      tapSound.preload = 'none';
+      tapSound.preload = 'auto';
       tapSound.onerror = () => { tapSound = null; };
 
       bellSound = new Audio('assets/audio/bell.mp3');
       bellSound.volume = 0.5;
-      bellSound.preload = 'none';
+      bellSound.preload = 'auto';
       bellSound.onerror = () => { bellSound = null; };
 
+      tapSound.load();
+      bellSound.load();
       audioReady = true;
     } catch {
       tapSound = null;
@@ -185,20 +188,84 @@ const SoundManager = (() => {
     }
   }
 
-  function play(sound) {
-    if (!enabled || !sound || !userInteracted) return;
+  function getAudioContext() {
+    if (!enabled || !userInteracted) return null;
+    try {
+      if (!audioContext) {
+        const Ctx = window.AudioContext || window.webkitAudioContext;
+        if (!Ctx) return null;
+        audioContext = new Ctx();
+      }
+      if (audioContext.state === 'suspended') {
+        audioContext.resume().catch(() => {});
+      }
+      return audioContext;
+    } catch {
+      return null;
+    }
+  }
+
+  function playTone(kind) {
+    const ctx = getAudioContext();
+    if (!ctx) return;
+    const now = ctx.currentTime;
+    const master = ctx.createGain();
+    master.connect(ctx.destination);
+    master.gain.setValueAtTime(0.0001, now);
+
+    if (kind === 'bell') {
+      const base = 440;
+      const partials = [1, 2.1, 3.2];
+      partials.forEach((p, i) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = i === 0 ? 'sine' : 'triangle';
+        osc.frequency.setValueAtTime(base * p, now);
+        gain.gain.setValueAtTime(0.11 / (i + 1), now);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.9);
+        osc.connect(gain).connect(master);
+        osc.start(now);
+        osc.stop(now + 0.95);
+      });
+      master.gain.exponentialRampToValueAtTime(0.0001, now + 0.95);
+    } else {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(760, now);
+      osc.frequency.exponentialRampToValueAtTime(540, now + 0.07);
+      gain.gain.setValueAtTime(0.08, now);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.08);
+      osc.connect(gain).connect(master);
+      osc.start(now);
+      osc.stop(now + 0.08);
+      master.gain.exponentialRampToValueAtTime(0.0001, now + 0.08);
+    }
+  }
+
+  function play(sound, kind) {
+    if (!enabled || !userInteracted) return;
+    if (!sound) {
+      playTone(kind);
+      return;
+    }
     try {
       sound.currentTime = 0;
-      sound.play().catch(() => {});
-    } catch {}
+      const played = sound.play();
+      if (played && typeof played.catch === 'function') {
+        played.catch(() => playTone(kind));
+      }
+    } catch {
+      playTone(kind);
+    }
   }
 
   function vibrate() { try { navigator.vibrate && navigator.vibrate(15); } catch {} }
 
   return {
     init, toggle, vibrate,
-    playTap: () => play(tapSound),
-    playBell: () => play(bellSound),
+    playTap: () => play(tapSound, 'tap'),
+    playBell: () => play(bellSound, 'bell'),
     isEnabled: () => enabled,
   };
 })();
